@@ -1,13 +1,7 @@
-import { ContactShadows, Environment, OrbitControls } from "@react-three/drei";
-import {
-  Center,
-  MeshReflectorMaterial,
-  PresentationControls,
-  Stage,
-} from "@react-three/drei";
-import Hoodie from "./Hoodie";
+import { ContactShadows, OrbitControls, Center, Stage } from "@react-three/drei";
+import { Shirt } from "./Shirt";
 
-const Experience = ({ color }) => {
+const Experience = ({ color, decal, decalProps }) => {
   return (
     <>
       <Stage
@@ -17,22 +11,22 @@ const Experience = ({ color }) => {
         adjustCamera={false}
       >
         <Center position={[0, -0.3, 0]}>
-          <Hoodie color={color} />
+          <Shirt color={color} decal={decal} decalProps={decalProps} />
         </Center>
       </Stage>
+      
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -4, 0]}>
         <planeGeometry args={[0, 0]} />
         <meshStandardMaterial color="#eaeaea" />
       </mesh>
       <ContactShadows
-        position={[0, 0, 0]}
+        position={[0, 0, -2]}
         opacity={0.45}
         scale={12}
         blur={3.5}
         far={3.5}
         color="#000000"
       />
-
       <OrbitControls
         enableZoom={false}
         enablePan={false}
@@ -42,8 +36,6 @@ const Experience = ({ color }) => {
         maxPolarAngle={Math.PI / 2}
         minAzimuthAngle={-Infinity}
         maxAzimuthAngle={Infinity}
-        autoRotate
-        autoRotateSpeed={1.2}
       />
     </>
   );
