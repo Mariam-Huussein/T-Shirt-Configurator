@@ -4,8 +4,8 @@ import InfoModel from "./components/InfoModel";
 import CanvasContainer from "./components/CanvasContainer";
 import CustomizationTools from "./components/CustomizationTools";
 import { ToastContainer, toast } from "react-toastify";
+import { FiSliders, FiInfo, FiRotateCcw } from "react-icons/fi";
 
-// const DEFAULT_COLOR = "#44211a";
 const DEFAULT_COLOR = "#ccc";
 const DEFAULT_DECAL_PROPS = {
   y: 0.04,
@@ -21,6 +21,7 @@ function App() {
   const [decalName, setDecalName] = useState("N/A");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
 
   const colorOptions = [
     "#ccc",
@@ -87,7 +88,7 @@ function App() {
     }
     setDecal(null);
     setDecalName("N/A");
-    toast.info("Image Successfully!");
+    toast.info("Image cleared successfully!");
   };
 
   //Reset all customizer tool 3D model
@@ -95,10 +96,10 @@ function App() {
     setColor(DEFAULT_COLOR);
     setDecalProps(DEFAULT_DECAL_PROPS);
     setIsModalOpen(false);
-    toast.info("Settings Reset Successfully!")
+    toast.info("Settings Reset Successfully!");
   };
 
-  //Clean Memorey
+  //Clean Memory
   useEffect(() => {
     const currentDecal = decal;
     return () => {
@@ -121,6 +122,55 @@ function App() {
         draggable
         pauseOnHover
       />
+
+      {/* Top Floating Branding / Header for quick context */}
+      <header className="app-topbar">
+        <div className="app-brand">
+          <span className="brand-dot" style={{ backgroundColor: color }} />
+          <h1 className="brand-title">3D T-Shirt Studio</h1>
+        </div>
+        <div className="topbar-actions">
+          <button
+            className="topbar-btn"
+            onClick={() => setIsModalOpen(true)}
+            title="View Specifications"
+            aria-label="View specifications"
+          >
+            <FiInfo size={18} />
+            <span className="btn-text">Specs</span>
+          </button>
+          <button
+            className="topbar-btn"
+            onClick={handleResetAll}
+            title="Reset All"
+            aria-label="Reset all settings"
+          >
+            <FiRotateCcw size={18} />
+            <span className="btn-text">Reset</span>
+          </button>
+        </div>
+      </header>
+
+      {/* Floating Toggle Button on Mobile / Tablet */}
+      <button
+        className={`mobile-tools-toggle ${isToolsOpen ? "active" : ""}`}
+        onClick={() => setIsToolsOpen((prev) => !prev)}
+        aria-label="Toggle Customization Panel"
+        aria-expanded={isToolsOpen}
+      >
+        <FiSliders size={20} />
+        <span>{isToolsOpen ? "Close Tools" : "Customize"}</span>
+      </button>
+
+      {/* Mobile Backdrop */}
+      {isToolsOpen && (
+        <div
+          className="drawer-backdrop"
+          onClick={() => setIsToolsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {/* Left Side -- customization-tools */}
       <CustomizationTools
         decal={decal}
@@ -133,11 +183,21 @@ function App() {
         handleClearDecal={handleClearDecal}
         handleResetAll={handleResetAll}
         setIsModalOpen={setIsModalOpen}
+        isOpen={isToolsOpen}
+        onClose={() => setIsToolsOpen(false)}
       />
 
-      {/* Right Side - Canvas */}
-      <CanvasContainer color={color} decal={decal} decalProps={decalProps} />
+      {/* Right Side - 3D Canvas */}
+      <main className="canvas-wrapper">
+        <CanvasContainer color={color} decal={decal} decalProps={decalProps} />
+        
+        {/* Helper Hint */}
+        <div className="drag-hint">
+          <span>Rotate 360° to preview design</span>
+        </div>
+      </main>
 
+      {/* Modal Dialog */}
       {isModalOpen && (
         <InfoModel
           onClose={() => setIsModalOpen(false)}
@@ -152,3 +212,4 @@ function App() {
 }
 
 export default App;
+
